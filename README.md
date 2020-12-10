@@ -24,5 +24,5 @@
 ## Experiments 
 
 Id | Code | Description | Notes |  train-NLL |  train-F1 |  train-EM | train-AvNA | dev-NLL |  dev-F1 |  dev-EM | dev-AvNA | 
---- | --- | --- | --- | --- | --- | --- | --- |
+--- | --- | --- | --- | --- | --- | --- | --- |--- |--- |--- |--- |
 Baseline | models.py | Baseline | No hyper-params tuning, hence dev-set used like test set. | 1.73 | 76.40 | 68.82 | 85.71 |3.35 | 57.31 | 53.87 | 64.44 |
