@@ -25,7 +25,8 @@
 
 Id | Code | Description | Notes |  load_path |train-NLL |  train-F1 |  train-EM | train-AvNA | dev-NLL |  dev-F1 |  dev-EM | dev-AvNA | 
 --- | --- | --- | --- | --- | --- | --- | --- |--- |--- |--- |--- |--- |
-baseline | models.py | Baseline | No hyper-params tuning, hence dev-set used like test set. | save/train/baseline-05/best.pth.tar | 1.73 | 76.40 | 68.82 | 85.71 |3.35 | 57.31 | 53.87 | 64.44 |
+baseline | models.py | Baseline | No hyper-params tuning, hence dev-set used like test set. | save/train/baseline-05/best.pth.tar | 1.73 | 76.40 | 68.82 | 85.71 |3.35 | __57.31__ | 53.87 | 64.44 |
 baseline_plus_1 | models.py | Baseline with larger modelsize and number of layers. `--hidden_size 150` , `--drop_prob 0.3` -  | The model appears to have a higher bias than baseline although the bigger capacity. This is due to the higher dropout probability. | save/train/baseline_plus_1-01/best.pth.tar | 02.27| 68.44 |60.75 | 80.29 | 03.22 | 56.62 | 53.25 | 63.75 |
 baseline_char_embed | models.py | Baseline with character embedding. | The model comes with higher capacity and overfits after 3 epochs. It is necessary some regularization. | save/train/baseline_char_embed-04/best.pth.tar | |  | |  | 05.27 | 52.19 | 52.19 | 52.14|
-baseline_char_embed | models.py | Baseline with character embedding and higher dropout (0.3 vs. 0.2). `--drop_prob 0.3` |  | save/train/baseline_char_embed-05/best.pth.tar | |  | |  | 05.27 | 52.19 | 52.19 | 52.14|
+baseline_char_embed | models.py | Baseline with character embedding and higher dropout (__0.3__ vs. 0.2). `--drop_prob 0.3` |  | save/train/baseline_char_embed-05/best.pth.tar |01.69 | 76.95 | 69.09| 86.17 | 03.37 | __58.02__ | 54.34 | 65.33|
+baseline_char_embed | models.py | Baseline with character embedding and higher dropout (__0.4__ vs. 0.2). `--drop_prob 0.3` |  | save/train/baseline_char_embed-05/best.pth.tar |01.69 | 76.95 | 69.09| 86.17 | 03.37 | __58.02__ | 54.34 | 65.33|
