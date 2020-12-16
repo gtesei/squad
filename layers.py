@@ -53,6 +53,7 @@ class CharEmbedding(nn.Module):
     def __init__(self, char_vectors, hidden_size, drop_prob,kernel_size=5):
         super(CharEmbedding, self).__init__()
         self.drop_prob = drop_prob
+        self.kernel_size = kernel_size
         self.hidden_size = hidden_size
         self.embed = nn.Embedding.from_pretrained(char_vectors) # (batch_size, seq_len, char_len, emb_dim)
         self.emb_dim  = char_vectors.size(1)
