@@ -131,8 +131,8 @@ class BiDAF_charCNN(nn.Module):
         c_emb_cc = self.emb(cc_idxs)         # (batch_size, c_len, hidden_size)
         q_emb_cc = self.emb(qc_idxs)         # (batch_size, q_len, hidden_size)
         
-        c_emb = self.hwy(c_emb_w,c_emb_cc)
-        q_emb = self.hwy(q_emb_w,q_emb_cc)
+        c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
+        q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
 
         c_enc = self.enc(c_emb, c_len)    # (batch_size, c_len, 2 * hidden_size)
         q_enc = self.enc(q_emb, q_len)    # (batch_size, q_len, 2 * hidden_size)
