@@ -37,6 +37,41 @@ class Embedding(nn.Module):
         emb = self.hwy(emb)   # (batch_size, seq_len, hidden_size)
 
         return emb
+    
+    
+class CharEmbedding(nn.Module):
+    """Embedding layer used by BiDAF.
+
+    Char-level embeddings are further refined using a 2-layer Highway Encoder
+   
+
+    Args:
+        char_vectors (torch.Tensor): Pre-trained char vectors.
+        hidden_size (int): Size of hidden activations.
+        drop_prob (float): Probability of zero-ing out activations
+    """
+    def __init__(self, char_vectors, hidden_size, drop_prob,out_channels=3,kernel_size=3):
+        super(CharEmbedding, self).__init__()
+        self.drop_prob = drop_prob
+        self.embed = nn.Embedding.from_pretrained(char_vectors) # (batch_size, seq_len, char_len, emb_dim)
+        self.emb_dim  = char_vectors.size(1)
+        self.conv1 = nn.Conv1d(in_channels=char_vectors.size(1), out_channels=out_channels,kernel_size=kernel_size) # can add: padding=1
+        self.proj = nn.Linear(char_vectors.size(1), hidden_size, bias=False)
+        self.hwy = HighwayEncoder(2, hidden_size)
+
+    def forward(self, x):
+        batch_size, seq_len, char_len = x.shape
+        
+        emb = self.embed(x)   #  (batch_size, seq_len, char_len, emb_dim) 
+        emb = F.dropout(emb, self.drop_prob, self.training)
+        emb = emb.view(batch_size,seq_len*char_len,self.emb_dim)
+        emb = emb.permute(0,2,1)
+        emb = self.conv1(emb)
+        emb = torch.max(emb,dim=2)[0]
+        emb = self.proj(emb)  # (batch_size, seq_len, hidden_size)
+        emb = self.hwy(emb)   # (batch_size, seq_len, hidden_size)
+
+        return emb
 
 
 class HighwayEncoder(nn.Module):
