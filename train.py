@@ -187,7 +187,7 @@ def evaluate(model, data_loader, device, eval_file, max_len, use_squad_v2,args):
             batch_size = cw_idxs.size(0)
 
             # Forward
-            if args.name == 'baseline_char_embed':
+            if args.name == 'baseline_char_embed' or args.name == 'baseline_char_embed_bert_enc':
                 log_p1, log_p2 = model(cw_idxs, cc_idxs, qw_idxs, qc_idxs) 
             else:
                 log_p1, log_p2 = model(cw_idxs, qw_idxs)
