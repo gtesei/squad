@@ -17,7 +17,7 @@ import util
 from args import get_train_args
 from collections import OrderedDict
 from json import dumps
-from models import BiDAF , BiDAF_charCNN
+from models import BiDAF , BiDAF_charCNN , BiDAF_charCNN_BERTEnc
 from tensorboardX import SummaryWriter
 from tqdm import tqdm
 from ujson import load as json_load
@@ -49,6 +49,11 @@ def main(args):
     log.info('Building model...')
     if args.name == 'baseline_char_embed':
         model = BiDAF_charCNN(word_vectors=word_vectors,
+                              char_vectors=char_vectors,
+                              hidden_size=args.hidden_size,
+                              drop_prob=args.drop_prob) 
+    elif args.name == 'baseline_char_embed_bert_enc':
+         model = BiDAF_charCNN_BERTEnc(word_vectors=word_vectors,
                               char_vectors=char_vectors,
                               hidden_size=args.hidden_size,
                               drop_prob=args.drop_prob) 
@@ -110,7 +115,7 @@ def main(args):
                 optimizer.zero_grad()
 
                 # Forward
-                if args.name == 'baseline_char_embed':
+                if args.name == 'baseline_char_embed' or args.name == 'baseline_char_embed_bert_enc':
                     log_p1, log_p2 = model(cw_idxs, cc_idxs, qw_idxs, qc_idxs) 
                 else:
                     log_p1, log_p2 = model(cw_idxs, qw_idxs)

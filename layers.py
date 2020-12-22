@@ -76,12 +76,12 @@ class CharEmbedding(nn.Module):
         
         x_conv = self.conv1(char_embeddings)  
         
-        x = max_pool_1d(F.relu_(x_conv)).squeeze()   # bb, hidden_size
+        x = max_pool_1d(F.relu_(x_conv)).squeeze()   # bb, hidden_size (=emb_dim)
         
         
-        x_highway = self.hwy(x)  # bb, hidden_size
+        x_highway = self.hwy(x)  # bb, hidden_size (=emb_dim)
         
-        output    = F.dropout(x_highway, self.drop_prob, self.training)   # bb, word_embed
+        output    = F.dropout(x_highway, self.drop_prob, self.training)   # bb, hidden_size (=emb_dim)
         
         output    = output.view(batch_size, seq_len, self.hidden_size)   # (batch_size, seq_len, hidden_size)
     
