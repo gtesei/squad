@@ -185,7 +185,7 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
                                            n_heads=8,
                                            out_size=2*hidden_size,
                                            d_ff=2048,
-                                           dropout_prob=drop_prob,
+                                           dropout_prob=0.1,
                                            ff_activation=F.relu)
 
         self.att = layers.BiDAFAttention(hidden_size=2 * hidden_size,
