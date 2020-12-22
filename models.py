@@ -114,11 +114,11 @@ class BiDAF_charCNN(nn.Module):
                                          drop_prob=drop_prob)
 
         self.mod = layers.RNNEncoder(input_size=8 * 2*hidden_size,
-                                     hidden_size=2*hidden_size,
+                                     hidden_size=hidden_size,
                                      num_layers=2,
                                      drop_prob=drop_prob)
 
-        self.out = layers.BiDAFOutput(hidden_size=2*hidden_size,
+        self.out = layers.BiDAFOutput(hidden_size=hidden_size,
                                       drop_prob=drop_prob)
 
     def forward(self, cw_idxs, cc_idxs, qw_idxs, qc_idxs):
@@ -183,15 +183,16 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         self.enc = bert_layers.BertEncoder(n_layers=6,
                                            d_feature=2*hidden_size, 
                                            n_heads=8,
+                                           out_size=2*hidden_size,
                                            d_ff=2048,
                                            dropout_prob=drop_prob,
                                            ff_activation=F.relu)
 
-        self.att = layers.BiDAFAttention(hidden_size=2 * 2*hidden_size,
+        self.att = layers.BiDAFAttention(hidden_size=2 * hidden_size,
                                          drop_prob=drop_prob)
 
-        self.mod = layers.RNNEncoder(input_size=8 * 2*hidden_size,
-                                     hidden_size=2*hidden_size,
+        self.mod = layers.RNNEncoder(input_size=8 * hidden_size,
+                                     hidden_size=hidden_size,
                                      num_layers=2,
                                      drop_prob=drop_prob)
 

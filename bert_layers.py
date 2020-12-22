@@ -172,17 +172,22 @@ class BertLayer(nn.Module):
         
 class BertEncoder(nn.Module):
     
-    def __init__(self,n_layers,d_feature,n_heads,d_ff,dropout_prob,ff_activation=F.relu):
+    def __init__(self,n_layers,d_feature,n_heads,out_size,d_ff,dropout_prob,ff_activation=F.relu):
         super().__init__()
+        self.dropout_prob = dropout_prob
+        
         self.layer = nn.ModuleList([BertLayer(d_feature=d_feature, 
                                               n_heads=n_heads,
                                               d_ff=d_ff,
                                               dropout_prob=dropout_prob,
                                               ff_activation=ff_activation) for _ in range(n_layers)])
+        self.dense = nn.Linear(d_feature , out_size)
     
     def forward(self,x,attention_mask=None):
         for i, layer_module in enumerate(self.layer):
             x = layer_module(x,attention_mask=attention_mask)
+        x = self.dense(x)
+        x = F.dropout(x, self.dropout_prob, self.training)
         return x 
         
     
