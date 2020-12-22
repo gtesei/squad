@@ -196,7 +196,7 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
                                      num_layers=2,
                                      drop_prob=drop_prob)
 
-        self.out = layers.BiDAFOutput(hidden_size=2*hidden_size,
+        self.out = layers.BiDAFOutput(hidden_size=hidden_size,
                                       drop_prob=drop_prob)
 
     def forward(self, cw_idxs, cc_idxs, qw_idxs, qc_idxs):
@@ -216,8 +216,7 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         c_enc = self.enc(c_emb)    # (batch_size, c_len, 2 * hidden_size)
         q_enc = self.enc(q_emb)    # (batch_size, q_len, 2 * hidden_size)
 
-        att = self.att(c_enc, q_enc,
-                       c_mask, q_mask)    # (batch_size, c_len, 8 * hidden_size)
+        att = self.att(c_enc, q_enc,c_mask, q_mask)    # (batch_size, c_len, 8 * hidden_size)
 
         mod = self.mod(att, c_len)        # (batch_size, c_len, 2 * hidden_size)
 
