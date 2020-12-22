@@ -212,8 +212,8 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
         q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
 
-        c_enc = self.enc(c_emb, c_len)    # (batch_size, c_len, 2 * hidden_size)
-        q_enc = self.enc(q_emb, q_len)    # (batch_size, q_len, 2 * hidden_size)
+        c_enc = self.enc(c_emb)    # (batch_size, c_len, 2 * hidden_size)
+        q_enc = self.enc(q_emb)    # (batch_size, q_len, 2 * hidden_size)
 
         att = self.att(c_enc, q_enc,
                        c_mask, q_mask)    # (batch_size, c_len, 8 * hidden_size)
