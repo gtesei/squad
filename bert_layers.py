@@ -162,7 +162,7 @@ class BertLayer(nn.Module):
         ## multi-head attention layer 
         self_attention_outputs = self.attention(input_tensor,attention_mask)
         self_attention_outputs = F.dropout(self_attention_outputs, self.dropout_prob, self.training)
-        self_attention_outputs = self.layer_norm_2(self_attention_outputs+input_tensor)
+        self_attention_outputs = self.layer_norm_1(self_attention_outputs+input_tensor)
         
         ## fw layer 
         x = self.dense1(self_attention_outputs)
@@ -198,7 +198,7 @@ class BertEncoder(nn.Module):
         for i, layer_module in enumerate(self.layer):
             x = layer_module(x,attention_mask=attention_mask)
         x = self.dense(x)
-        x = F.dropout(x, self.dropout_prob, self.training)
+        #x = F.dropout(x, self.dropout_prob, self.training)
         return x 
         
     
