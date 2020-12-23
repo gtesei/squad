@@ -96,15 +96,25 @@ class BertSelfAttention(nn.Module):
         
     
     def compute_attention_heads(self, x):
-        new_x_shape = x.size()[:-1] + (self.n_heads, self.d_head)
-        x = x.view(*new_x_shape)
-        return x.permute(0, 2, 1, 3)
+        #new_x_shape = x.size()[:-1] + (self.n_heads, self.d_head)
+        #x = x.view(*new_x_shape)
+        #return x.permute(0, 2, 1, 3)
+        batch_size = x.shape[0]
+        seqlen = x.shape[1]
+        x = x.view(batch_size, seqlen, self.n_heads, self.d_head)
+        x = x.permute(0, 2, 1, 3)
+        x = x.reshape(batch_size*self.n_heads,seqlen,self.d_head)
+        return x
     
     def compute_attention_output(self, x):
-        x = x.permute(0, 2, 1, 3).contiguous()
-        new_context_layer_shape = x.size()[:-2] + (self.d_feature ,)
-        x = x.view(*new_context_layer_shape)
-        return x 
+        #x = x.permute(0, 2, 1, 3).contiguous()
+        #new_context_layer_shape = x.size()[:-2] + (self.d_feature ,)
+        #x = x.view(*new_context_layer_shape)
+        #return x
+        seqlen = x.shape[-2]
+        x = x.view(-1,self.n_heads,seqlen,self.d_head)
+        x = x.permute(0,2,1,3)
+        return x.reshape(-1, seqlen, self.n_heads * self.d_head)
     
     def forward(self,hidden_states,attention_mask=None):
         mixed_query_layer = self.query(hidden_states)
@@ -141,7 +151,8 @@ class BertLayer(nn.Module):
         self.d_ff = d_ff
         
         self.attention = BertSelfAttention(d_feature,n_heads)
-        self.LayerNorm = nn.LayerNorm(d_feature,elementwise_affine=False)
+        self.layer_norm_1 = nn.LayerNorm(d_feature)
+        self.layer_norm_2 = nn.LayerNorm(d_feature)
         self.dense1 = nn.Linear(self.d_feature , self.d_ff)
         self.dense2 = nn.Linear(self.d_ff , self.d_feature)
     
@@ -149,17 +160,17 @@ class BertLayer(nn.Module):
     def forward(self,input_tensor,attention_mask=None):
         
         ## multi-head attention layer 
-        self_attention_outputs = self.LayerNorm(input_tensor)
         self_attention_outputs = self.attention(self_attention_outputs,attention_mask)
         self_attention_outputs = F.dropout(self_attention_outputs, self.dropout_prob, self.training)
+        self_attention_outputs = self.layer_norm_2(self_attention_outputs+input_tensor)
         
         ## fw layer 
-        x = self.LayerNorm(self_attention_outputs)
         x = self.dense1(x)
         x = self.ff_activation(x)
         x = F.dropout(x, self.dropout_prob, self.training)
         x = self.dense2(x)
         x = F.dropout(x, self.dropout_prob, self.training)
+        x = self.layer_norm_2(x+self_attention_outputs)
         
         return x 
         

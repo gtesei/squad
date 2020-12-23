@@ -180,11 +180,12 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         
         self.hwy = layers.HighwayEncoder(2, 2*hidden_size)
 
-        self.enc = bert_layers.BertEncoder(n_layers=6,
+        self.enc = bert_layers.BertEncoder(n_layers=3, #n_layers=6,
                                            d_feature=2*hidden_size, 
                                            n_heads=8,
                                            out_size=2*hidden_size,
-                                           d_ff=2048,
+                                           #d_ff=2048,
+                                           d_ff = 2*hidden_size, 
                                            dropout_prob=0.1,
                                            ff_activation=F.relu)
 
