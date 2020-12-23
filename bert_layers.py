@@ -165,7 +165,7 @@ class BertLayer(nn.Module):
         self_attention_outputs = self.layer_norm_2(self_attention_outputs+input_tensor)
         
         ## fw layer 
-        x = self.dense1(x)
+        x = self.dense1(self_attention_outputs)
         x = self.ff_activation(x)
         x = F.dropout(x, self.dropout_prob, self.training)
         x = self.dense2(x)
