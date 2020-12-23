@@ -160,7 +160,7 @@ class BertLayer(nn.Module):
     def forward(self,input_tensor,attention_mask=None):
         
         ## multi-head attention layer 
-        self_attention_outputs = self.attention(self_attention_outputs,attention_mask)
+        self_attention_outputs = self.attention(input_tensor,attention_mask)
         self_attention_outputs = F.dropout(self_attention_outputs, self.dropout_prob, self.training)
         self_attention_outputs = self.layer_norm_2(self_attention_outputs+input_tensor)
         
