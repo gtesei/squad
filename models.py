@@ -268,7 +268,7 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         hidden_size (int): Number of features in the hidden state at each layer.
         drop_prob (float): Dropout probability.
     """
-    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.,twist_embeddings=True):
+    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.,twist_embeddings=False):
         super(BiDAF_charCNN_BERTEnc, self).__init__()
         
         ###
@@ -291,12 +291,12 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         
         self.hwy = layers.HighwayEncoder(2, 2*hidden_size)
 
-        self.enc = bert_layers.BertEncoder(n_layers=3, #n_layers=4,
+        self.enc = bert_layers.BertEncoder(n_layers=4, #n_layers=4,
                                            d_feature=2*hidden_size, 
                                            n_heads=8,
                                            out_size=2*hidden_size,
-                                           #d_ff=2048,
-                                           d_ff = 2*hidden_size, 
+                                           d_ff=2048,
+                                           #d_ff = 2*hidden_size, 
                                            dropout_prob=0.1,
                                            #dropout_prob=drop_prob,
                                            ff_activation=F.relu)
