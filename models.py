@@ -177,7 +177,7 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         for i in range(hidden_size):
             idx_list.append(i)
             idx_list.append(hidden_size+i)
-        self.idx_twist = torch.tensor(idx_list)
+        self.register_buffer('idx_twist',torch.tensor(idx_list))
         ###
         
         
