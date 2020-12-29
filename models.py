@@ -269,7 +269,7 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         drop_prob (float): Dropout probability.
     """
     def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.,twist_embeddings=False):
-        super(BiDAF_charCNN_BERTEnc, self).__init__()
+        super(BiDAF_charCNN_BERTEnc_BERTMod, self).__init__()
         
         ###
         self.twist_embeddings = twist_embeddings
@@ -307,7 +307,7 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         self.mod = bert_layers.BertEncoder(n_layers=6, #n_layers=3,
                                            d_feature=8*hidden_size, 
                                            n_heads=8,
-                                           out_size=hidden_size,
+                                           out_size=2*hidden_size,
                                            d_ff=2048,
                                            #d_ff = 2*hidden_size, 
                                            dropout_prob=0.1,
