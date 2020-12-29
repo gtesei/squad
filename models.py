@@ -168,8 +168,19 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         hidden_size (int): Number of features in the hidden state at each layer.
         drop_prob (float): Dropout probability.
     """
-    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.):
+    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.,twist_embeddings=True):
         super(BiDAF_charCNN_BERTEnc, self).__init__()
+        
+        ###
+        self.twist_embeddings = twist_embeddings
+        idx_list = []
+        for i in range(hidden_size):
+            idx_list.append(i)
+            idx_list.append(hidden_size+i)
+        self.idx_twist = torch.tensor(idx_list)
+        ###
+        
+        
         self.emb = layers.Embedding(word_vectors=word_vectors,
                                     hidden_size=hidden_size,
                                     drop_prob=drop_prob)
@@ -200,6 +211,12 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
 
         self.out = layers.BiDAFOutput(hidden_size=hidden_size,
                                       drop_prob=drop_prob)
+    
+    def twist(self,a,b):
+        assert a.shape  == b.shape  , 'tensors to be twisted need to have the same size'
+        idx = self.idx_twist.repeat(a.shape[0],a.shape[1],1)
+        c = torch.cat([a,b],axis=-1)
+        return torch.gather(c,-1,idx)
 
     def forward(self, cw_idxs, cc_idxs, qw_idxs, qc_idxs):
         c_mask = torch.zeros_like(cw_idxs) != cw_idxs
@@ -212,8 +229,12 @@ class BiDAF_charCNN_BERTEnc(nn.Module):
         c_emb_cc = self.char_emb(cc_idxs)         # (batch_size, c_len, hidden_size)
         q_emb_cc = self.char_emb(qc_idxs)         # (batch_size, q_len, hidden_size)
         
-        c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
-        q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
+        if self.twist_embeddings:
+            c_emb = self.hwy(self.twist(c_emb_w,c_emb_cc))
+            q_emb = self.hwy(self.twist(q_emb_w,q_emb_cc)) 
+        else:
+            c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
+            q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
 
         c_enc = self.enc(c_emb)    # (batch_size, c_len, 2 * hidden_size)
         q_enc = self.enc(q_emb)    # (batch_size, q_len, 2 * hidden_size)
@@ -247,8 +268,19 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         hidden_size (int): Number of features in the hidden state at each layer.
         drop_prob (float): Dropout probability.
     """
-    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.):
+    def __init__(self, word_vectors, char_vectors, hidden_size, drop_prob=0.,twist_embeddings=True):
         super(BiDAF_charCNN_BERTEnc, self).__init__()
+        
+        ###
+        self.twist_embeddings = twist_embeddings
+        idx_list = []
+        for i in range(hidden_size):
+            idx_list.append(i)
+            idx_list.append(hidden_size+i)
+        self.idx_twist = torch.tensor(idx_list)
+        ###
+        
+        
         self.emb = layers.Embedding(word_vectors=word_vectors,
                                     hidden_size=hidden_size,
                                     drop_prob=drop_prob)
@@ -289,6 +321,13 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
 
         self.out = layers.BiDAFOutput(hidden_size=hidden_size,
                                       drop_prob=drop_prob)
+    
+    def twist(self,a,b):
+        assert a.shape  == b.shape  , 'tensors to be twisted need to have the same size'
+        idx = self.idx_twist.repeat(a.shape[0],a.shape[1],1)
+        c = torch.cat([a,b],axis=-1)
+        return torch.gather(c,-1,idx)
+        
 
     def forward(self, cw_idxs, cc_idxs, qw_idxs, qc_idxs):
         c_mask = torch.zeros_like(cw_idxs) != cw_idxs
@@ -301,8 +340,12 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         c_emb_cc = self.char_emb(cc_idxs)         # (batch_size, c_len, hidden_size)
         q_emb_cc = self.char_emb(qc_idxs)         # (batch_size, q_len, hidden_size)
         
-        c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
-        q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
+        if self.twist_embeddings:
+            c_emb = self.hwy(self.twist(c_emb_w,c_emb_cc))
+            q_emb = self.hwy(self.twist(q_emb_w,q_emb_cc)) 
+        else:
+            c_emb = self.hwy(torch.cat([c_emb_w,c_emb_cc],axis=-1))
+            q_emb = self.hwy(torch.cat([q_emb_w,q_emb_cc],axis=-1))
 
         c_enc = self.enc(c_emb)    # (batch_size, c_len, 2 * hidden_size)
         q_enc = self.enc(q_emb)    # (batch_size, q_len, 2 * hidden_size)
