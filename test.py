@@ -55,8 +55,7 @@ def main(args):
     elif args.name == 'baseline_char_embed_bert_enc_bert_mod': 
          model = BiDAF_charCNN_BERTEnc_BERTMod(word_vectors=word_vectors,
                               char_vectors=char_vectors,
-                              hidden_size=args.hidden_size,
-                              drop_prob=args.drop_prob) 
+                              hidden_size=args.hidden_size) 
     else:
         model = BiDAF(word_vectors=word_vectors,
                       hidden_size=args.hidden_size)

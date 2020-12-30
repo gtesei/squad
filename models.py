@@ -291,12 +291,12 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         
         self.hwy = layers.HighwayEncoder(2, 2*hidden_size)
 
-        self.enc = bert_layers.BertEncoder(n_layers=4, #n_layers=4,
+        self.enc = bert_layers.BertEncoder(n_layers=3, #n_layers=4,
                                            d_feature=2*hidden_size, 
                                            n_heads=8,
                                            out_size=2*hidden_size,
-                                           d_ff=2048,
-                                           #d_ff = 2*hidden_size, 
+                                           #d_ff=2048,
+                                           d_ff = 2*hidden_size, 
                                            dropout_prob=0.1,
                                            #dropout_prob=drop_prob,
                                            ff_activation=F.relu)
@@ -304,12 +304,12 @@ class BiDAF_charCNN_BERTEnc_BERTMod(nn.Module):
         self.att = layers.BiDAFAttention(hidden_size=2 * hidden_size,
                                          drop_prob=drop_prob)
         
-        self.mod = bert_layers.BertEncoder(n_layers=6, #n_layers=3,
+        self.mod = bert_layers.BertEncoder(n_layers=3, #n_layers=3,
                                            d_feature=8*hidden_size, 
                                            n_heads=8,
                                            out_size=2*hidden_size,
-                                           d_ff=2048,
-                                           #d_ff = 2*hidden_size, 
+                                           #d_ff=2048,
+                                           d_ff = 2*hidden_size, 
                                            dropout_prob=0.1,
                                            #dropout_prob=drop_prob,
                                            ff_activation=F.relu)
